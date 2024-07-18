@@ -30,6 +30,7 @@ jobs:
 
   Build-Docker:
     runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
     steps:
       - uses: actions/checkout@v4
         name: Check out code
@@ -41,3 +42,19 @@ jobs:
           tags: v1, latest
           registry: docker.io
           pushImage: false
+  
+  Push-Docker:
+    runs-on: ubuntu-latest
+    needs: Code-Quality
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+        name: Check out code
+
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build & push Docker image
+        with:
+          image: repo/image
+          tags: v1, latest
+          registry: docker.io
+          pushImage: true
