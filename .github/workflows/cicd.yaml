@@ -40,7 +40,7 @@ jobs:
         with:
           image: repo/image
           tags: v1, latest
-          registry: docker.io
+          registry: ghcr.io
           pushImage: false
   
   Push-Docker:
@@ -52,9 +52,11 @@ jobs:
         name: Check out code
 
       - uses: mr-smithers-excellent/docker-build-push@v6
-        name: Build & push Docker image
+        name: Build & Push Docker image
         with:
-          image: repo/image
+          image: ghcr.io/josemrs/revolut-hometask
           tags: v1, latest
-          registry: docker.io
+          registry: ghcr.io
+          username: josemrs
+          password: ${{secrets.GITHUB_TOKEN}}
           pushImage: true
