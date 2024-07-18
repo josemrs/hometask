@@ -1,0 +1,43 @@
+name: push
+run-name: Push workflow
+on: [push]
+jobs:
+  Code-Quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        name: Check out code
+    
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      
+      - name: Install test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint pytest black
+          pip install -r requirements.txt
+
+      - name: Test
+        run: python -m pytest tests/test_unit.py
+
+      - name: Lint
+        run: python -m pylint src
+
+      - name: Black
+        run: python -m black --diff --check src
+
+  Build-Docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        name: Check out code
+
+      - uses: mr-smithers-excellent/docker-build-push@v6
+        name: Build & push Docker image
+        with:
+          image: repo/image
+          tags: v1, latest
+          registry: docker.io
+          pushImage: false
