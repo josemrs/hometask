@@ -13,7 +13,6 @@ from db import get_db  # pylint: disable=import-error
 
 api = FastAPI()
 
-
 @api.put("/hello/{username}", status_code=204)
 async def create_user(
     username: str, date_of_birth: PutDateOfBirth, db: Session = Depends(get_db)
