@@ -1,0 +1,28 @@
+services:
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: hello
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./migrations:/docker-entrypoint-initdb.d
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    command: uvicorn api:api --host 0.0.0.0 --port 80
+    environment:
+      DATABASE_URL: "postgresql://test:test@db:5432/hello"
+    volumes:
+      - .:/src/api
+    ports:
+      - "8000:80"
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
