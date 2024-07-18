@@ -1,0 +1,7 @@
+apiVersion: v2
+name: hometask
+description: A Helm chart for Revolut Hometask deployment on Kubernetes
+type: application
+
+version: 0.1.0
+appVersion: "v1"
