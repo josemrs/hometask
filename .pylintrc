@@ -3,3 +3,7 @@
 disable=
     too-few-public-methods,
     import-error
+
+[FORMAT]
+
+max-line-length=120
