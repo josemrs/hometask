@@ -47,6 +47,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: Code-Quality
     if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
         name: Check out code
