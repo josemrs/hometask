@@ -5,7 +5,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # DATABASE URL taken from environment variables or default for test
-DATABASE_URL = environ.get("DATABASE_URL", "postgresql://test:test@db:5432/hello")
+DATABASE_HOST = environ.get("DATABASE_HOST", "db")
+DATABASE_USER = environ.get("DATABASE_USER", "test")
+DATABASE_PASS = environ.get("DATABASE_PASS", "test")
+DATABASE_PORT = environ.get("DATABASE_PORT", "5432")
+DATABASE_NAME = environ.get("DATABASE_NAME", "hello")
+DATABASE_URL = f"postgresql://{DATABASE_USER}:{DATABASE_PASS}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
 
 # Connect to the DB and get a session maker
 engine = create_engine(DATABASE_URL)
