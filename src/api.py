@@ -49,7 +49,7 @@ async def create_user(
     except IntegrityError as e:
         db.rollback()
         raise HTTPException(
-            status_code=404, detail="Error inserting or updating user"
+            status_code=500, detail="Error inserting or updating user"
         ) from e
 
     return None

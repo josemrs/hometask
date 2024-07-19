@@ -3,6 +3,7 @@ from unittest.mock import MagicMock
 import datetime
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.exc import IntegrityError
 
 from models import User
 from api import api, get_db
@@ -33,7 +34,6 @@ def test_create_user_valid_input(db_session, client):
     assert db_session.commit.called
     assert not db_session.rollback.called
 
-
 def test_create_user_invalid_username(db_session, client):
     username = "test123"  # contains non-alpha
     date_of_birth = datetime.date(1990, 5, 15)
@@ -50,6 +50,17 @@ def test_create_user_future_date_of_birth(client):
     
     assert response.status_code == 400
     assert response.json() == {"detail": "The date of birth must be a date before the today date"}
+
+def test_create_user_except(db_session, client):
+    username = "testuser"
+    future_date = datetime.date.today() - datetime.timedelta(days=1)
+    db_session.commit.side_effect = IntegrityError(MagicMock(), MagicMock(), MagicMock())
+    response = client.put(f"/hello/{username}", json={"dateOfBirth": str(future_date)})
+
+    assert response.status_code == 500
+    assert db_session.merge.called
+    assert db_session.rollback.called
+    assert response.json() == {"detail": "Error inserting or updating user"}
 
 def test_create_user_duplicate_username(client):
     username = "existinguser"
@@ -75,6 +86,20 @@ def test_get_user_existing_user(db_session, client):
     response = client.get(f"/hello/{username}")
     assert response.status_code == 200
     assert "Hello, testuser!" in response.json()["message"]
+
+def test_get_user_bday_today(db_session, client):
+    username = "testuser"
+
+    query_mock = MagicMock()
+    filter_mock = MagicMock()
+    user = User(username=username, date_of_birth=datetime.date.today())
+    query_mock.filter.return_value = filter_mock
+    filter_mock.first.return_value = user
+    db_session.query.return_value = query_mock
+
+    response = client.get(f"/hello/{username}")
+    assert response.status_code == 200
+    assert f"Hello, {username}! Happy birthday!" == response.json()["message"]
 
 def test_get_user_non_existing_user(db_session, client):
     username = "nonexistentuser"
