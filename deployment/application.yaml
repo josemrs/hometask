@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: hello-api
+  namespace: applications
+spec:
+  project: revolut
+  source:
+    repoURL: https://github.com/josemrs/hometask.git
+    targetRevision: HEAD
+    path: charts/hometask
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: hometask

@@ -111,7 +111,7 @@ Helm chart to deploy Hello API in K8S. Includes:
   - Secret for GitHub Container Registry access
   - ...
 
-### For local testing on K8S
+### Local testing on K8S
 
 - Install minikube and run ```minikube start```
 - secret.yaml
@@ -126,3 +126,7 @@ Helm chart to deploy Hello API in K8S. Includes:
   - ```DATABASE_PASS```
 - Create the namespace for Hello API. Update ```.Values.namespace``` if not ```homestask```
 - Deploy Hello API: ```helm install hometask ./hometask``` 
+
+## deployment
+
+Includes a sample application for [ArgCD](https://argo-cd.readthedocs.io/en/stable/)
