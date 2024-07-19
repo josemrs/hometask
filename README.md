@@ -53,6 +53,7 @@ Unit tests for the API get/put routes using pytest
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+pip install pytest pytest-cov
 pytest tests/test_unit.py
 ```
 
