@@ -1,5 +1,6 @@
 fastapi
-uvicorn
-sqlalchemy
+prometheus-fastapi-instrumentator
 psycopg2-binary
 pydantic
+sqlalchemy
+uvicorn

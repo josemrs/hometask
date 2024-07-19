@@ -2,16 +2,25 @@
 
 import datetime
 from fastapi import FastAPI, HTTPException, Depends
+from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+
 from models import (
+#    Base,
     User,
     PutDateOfBirth,
     GetUsernameResponse,
 )  # pylint: disable=import-error
+#from db import engine, get_db  # pylint: disable=import-error
 from db import get_db  # pylint: disable=import-error
 
 api = FastAPI()
+
+# Initialize the database (Redundant if using migrations)
+#Base.metadata.create_all(bind=engine)
+
+Instrumentator().instrument(api).expose(api)
 
 @api.put("/hello/{username}", status_code=204)
 async def create_user(
