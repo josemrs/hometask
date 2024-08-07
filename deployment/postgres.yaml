@@ -9,7 +9,7 @@ spec:
     namespace: postgres
   project: revolut
   sources:
-  - chart: mimir
+  - chart: postgresql
     helm:
       releaseName: postgresql
     repoURL: oci://registry-1.docker.io/bitnamicharts/
