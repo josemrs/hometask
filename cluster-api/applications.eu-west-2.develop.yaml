@@ -1,0 +1,208 @@
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: applications.eu-west-2.develop
+  namespace: develop
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+    kind: AWSManagedControlPlane
+    name: applications.eu-west-2.develop
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+    kind: AWSManagedCluster
+    name: applications.eu-west-2.develop
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSManagedCluster
+metadata:
+  name: applications.eu-west-2.develop
+  namespace: develop
+spec: {}
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: AWSManagedControlPlane
+metadata:
+  name: applications.eu-west-2.develop
+  namespace: develop
+spec:
+  associateOIDCProvider: true
+  eksClusterName: applications_eu-west-2_develop
+  region: eu-west-2
+  version: v1.30.0
+  network:
+    vpc:
+      id: vpc-085a960a76babacba
+    subnets:
+    - id: subnet-0c329c63ca286781b
+    - id: subnet-00d71cf86d11d7ffa
+    - id: subnet-03c80bb472243b6af
+  endpointAccess:
+    private: true
+    public: false
+  bastion:
+    enabled: false
+  logging:
+    apiServer: false
+    controllerManager: false
+    audit: false
+    authenticator: false
+    scheduler: false
+  addons:
+  - name: "kube-proxy"
+    version: "v1.30.0-eksbuild.3"
+    conflictResolution: "overwrite"
+  - name: "vpc-cni"
+    version: "v1.18.1-eksbuild.3"
+    conflictResolution: "overwrite"
+  vpcCni:
+    env:
+    - name: POD_SECURITY_GROUP_ENFORCING_MODE
+      value: standard
+    - name: ENABLE_POD_ENI
+      value: "true"
+    - name: ENABLE_PREFIX_DELEGATION
+      value: "true"
+  additionalTags:
+    Owner: "josemrs"
+    created_by: "https://github.com/josemrs/hometask"
+    Environment: "develop"
+  identityRef:
+    kind: AWSClusterRoleIdentity
+    name: develop
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachinePool
+metadata:
+  name: applications-develop-pool-eu-west-2a
+  namespace: develop
+spec:
+  clusterName: applications.eu-west-2.develop
+  replicas: 1
+  failureDomains:
+  - eu-west-2a
+  template:
+    spec:
+      bootstrap:
+        dataSecretName: ""
+      clusterName: applications.eu-west-2.develop
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+        kind: AWSManagedMachinePool
+        name: applications-develop-pool-eu-west-2a
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSManagedMachinePool
+metadata:
+  name: applications-develop-pool-eu-west-2a
+  namespace: develop
+spec:
+  eksNodegroupName: applications-develop-pool-eu-west-2a
+  availabilityZones:
+  - eu-west-2a
+  scaling:
+    minSize: 1
+    maxSize: 2
+  updateConfig:
+    maxUnavailablePercentage: 50
+  subnetIDs:
+  - subnet-0c329c63ca286781b
+  awsLaunchTemplate:
+    instanceType: m5n.xlarge
+    ami:
+      id: ami-123456789abcdef00
+  roleAdditionalPolicies:
+  - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachinePool
+metadata:
+  name: applications-develop-pool-eu-west-2b
+  namespace: develop
+spec:
+  clusterName: applications.eu-west-2.develop
+  replicas: 1
+  failureDomains:
+  - eu-west-2b
+  template:
+    spec:
+      bootstrap:
+        dataSecretName: ""
+      clusterName: applications.eu-west-2.develop
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+        kind: AWSManagedMachinePool
+        name: applications-develop-pool-eu-west-2b
+
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSManagedMachinePool
+metadata:
+  name: applications-develop-pool-eu-west-2b
+  namespace: develop
+spec:
+  eksNodegroupName: applications-develop-pool-eu-west-2b
+  availabilityZones:
+  - eu-west-2b
+  scaling:
+    minSize: 1
+    maxSize: 2
+  updateConfig:
+    maxUnavailablePercentage: 50
+  subnetIDs:
+  - subnet-00d71cf86d11d7ffa
+  awsLaunchTemplate:
+    instanceType: m5n.xlarge
+    ami:
+      id: ami-123456789abcdef00
+  roleAdditionalPolicies:
+  - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachinePool
+metadata:
+  name: applications-develop-pool-eu-west-2c
+  namespace: develop
+spec:
+  clusterName: applications.eu-west-2.develop
+  replicas: 1
+  failureDomains:
+  - eu-west-2c
+  template:
+    spec:
+      bootstrap:
+        dataSecretName: ""
+      clusterName: applications.eu-west-2.develop
+      infrastructureRef:
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+        kind: AWSManagedMachinePool
+        name: applications-develop-pool-eu-west-2c
+
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: AWSManagedMachinePool
+metadata:
+  name: applications-develop-pool-eu-west-2c
+  namespace: develop
+spec:
+  eksNodegroupName: applications-develop-pool-eu-west-2c
+  availabilityZones:
+  - eu-west-2c
+  scaling:
+    minSize: 1
+    maxSize: 2
+  updateConfig:
+    maxUnavailablePercentage: 40
+  subnetIDs:
+  - subnet-03c80bb472243b6af
+  awsLaunchTemplate:
+    instanceType: m5n.xlarge
+    ami:
+      id: ami-123456789abcdef00
+  roleAdditionalPolicies:
+  - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore

@@ -1,6 +1,6 @@
 resource "aws_security_group" "pod-isolation" {
   name        = "${var.environment}-public-sg"
-  description = "EKS Public Security Group"
+  description = "EKS Pod Isolation Security Group"
   vpc_id      = aws_vpc.vpc.id
 
   ingress {
