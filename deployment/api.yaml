@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: hello-api
-  namespace: applications
+  namespace: argocd
 spec:
   project: revolut
   source:
@@ -12,3 +12,13 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: hometask
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 3m
+      limit: 3

@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres
+  namespace: argocd
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: postgres
+  project: revolut
+  sources:
+  - chart: mimir
+    helm:
+      releaseName: postgresql
+    repoURL: oci://registry-1.docker.io/bitnamicharts/
+    targetRevision: 16.3.0
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 3m
+      limit: 3
